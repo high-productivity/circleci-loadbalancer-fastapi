@@ -22,7 +22,7 @@ ENV BITNAMI_APP_NAME="python" \
     BITNAMI_IMAGE_VERSION="3.7.9-debian-10-r30" \
     PATH="/opt/bitnami/python/bin:$PATH"
 
-EXPOSE 8000
+EXPOSE 80
 
 WORKDIR /app
 CMD [ "python" ]
