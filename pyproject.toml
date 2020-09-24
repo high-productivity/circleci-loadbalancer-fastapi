@@ -25,9 +25,6 @@ databases = "^0.2.1"
 motor = "2.2.0"
 python-multipart = "*"
 
-[tool.poetry.dev-dependencies]
-pytest = "*"
-
 [tool.black]
 exclued = '''
 /(
