@@ -1,21 +1,18 @@
 version: 2.1
-
 orbs:
-  python: circleci/python@0.2.1
-
-jobs:
-  build-and-test:
-    executor: python/default
-    steps:
-      - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
-      - run:
-          command: ./manage.py test
-          name: Test
-
+  aws-ecr: circleci/aws-ecr@6.5.0
+  aws-ecs: circleci/aws-ecs@0.0.10
 workflows:
-  main:
+  build-and-deploy:
     jobs:
-      - build-and-test
+      - aws-ecr/build-and-push-image:
+          account-url: 028073084876.dkr.ecr.ap-southeast-1.amazonaws.com
+          repo: '${MY_APP_PREFIX}'
+          region: ap-southeast-1
+          tag: '${CIRCLE_SHA1}'
+      - aws-ecs/deploy-service-update:
+          requires:
+            - aws-ecr/build-and-push-image
+          family: '${MY_APP_PREFIX}-service'
+          cluster-name: '${MY_APP_PREFIX}-cluster'
+          container-image-name-updates: 'container=${MY_APP_PREFIX}-service,tag=${CIRCLE_SHA1}'
