@@ -1,5 +1,16 @@
 version: 2
 jobs:
+  build:
+    environment:
+      IMAGE_NAME: tonydeveloper/python3.7-fastapi
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: docker build -t $IMAGE_NAME:latest .
   publish-latest:
     environment:
       IMAGE_NAME: tonydeveloper/python3.7-fastapi
@@ -12,26 +23,15 @@ jobs:
           command: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $IMAGE_NAME:latest
-  build:
-    environment:
-      IMAGE_NAME: tonydeveloper/python3.7-fastapi
-    docker:
-      - image: circleci/buildpack-deps:stretch
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Build Docker image
-          command: docker build -t $IMAGE_NAME:latest .
 workflows:
   version: 2
   build-master:
     jobs:
-      - build:
+      - publish-latest:
           filters:
             branches:
               only: master
-      - publish-latest:
+      - build:
           filters:
             branches:
               only: master
