@@ -1,18 +1,39 @@
-version: 2.1
-orbs:
-  aws-ecr: circleci/aws-ecr@6.7.0
-  aws-ecs: circleci/aws-ecs@0.0.10
-workflows:
-  build-and-deploy:
-    jobs:
-      - aws-ecr/build-and-push-image:
-          account-url: AWS_ECR_ACCOUNT_URL
-          repo: '${MY_APP_PREFIX}'
-          region: AWS_DEFAULT_REGION
-          tag: '${CIRCLE_SHA1}'
-      - aws-ecs/deploy-service-update:
-          requires:
-            - aws-ecr/build-and-push-image
-          family: '${MY_APP_PREFIX}-service'
-          cluster-name: '${MY_APP_PREFIX}-cluster'
-          container-image-name-updates: 'container=${MY_APP_PREFIX}-service,tag=${CIRCLE_SHA1}'
+version: 2
+jobs:
+  build:
+    environment:
+      IMAGE_NAME: hpd/building-on-ci
+    docker:
+      - image: tonydeveloper/fastapi-demo
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: docker build -t $IMAGE_NAME:latest .
+  publish-latest:
+    environment:
+      IMAGE_NAME: tonydeveloper/fastapi-demo
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - setup_remote_docker
+      - run:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker push $IMAGE_NAME:latest
+  workflows:
+    version: 2
+    build-master:
+      jobs:
+        - build:
+            filters:
+              branches:
+                only: master
+        - publish-latest:
+            requires:
+              - build
+            filters:
+              branches:
+                only: master

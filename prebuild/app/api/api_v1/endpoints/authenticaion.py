@@ -4,7 +4,6 @@ from fastapi import APIRouter, Body, Depends
 from starlette.exceptions import HTTPException
 from starlette.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED
 
-import facebook
 import requests 
 import urllib.request
 import uuid
