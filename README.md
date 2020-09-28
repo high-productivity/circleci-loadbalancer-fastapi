@@ -1,1 +1,3 @@
-CircleCI - Amazon ECR - Amazon EC2 - Amazon LB demo
+CircleCI - Docker Hub - Amazon EC2 demo
+
+This repository would trigger build process on Circle CI and redeploy on EC2
