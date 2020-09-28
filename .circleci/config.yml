@@ -4,7 +4,7 @@ jobs:
     environment:
       IMAGE_NAME: hpd/building-on-ci
     docker:
-      - image: tonydeveloper/fastapi-demo
+      - image: tonydeveloper/python3.7-fastapi:latest
     steps:
       - checkout
       - setup_remote_docker
@@ -13,7 +13,7 @@ jobs:
           command: docker build -t $IMAGE_NAME:latest .
   publish-latest:
     environment:
-      IMAGE_NAME: tonydeveloper/fastapi-demo
+      IMAGE_NAME: tonydeveloper/python3.7-fastapi:latest
     docker:
       - image: circleci/buildpack-deps:stretch
     steps:
