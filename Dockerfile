@@ -8,4 +8,4 @@ EXPOSE 8001
 RUN rm -r /home/*
 COPY ./prebuild /home
 WORKDIR /home
-CMD ["/home/app/start.sh"]
+CMD ["/home/start.sh"]
