@@ -16,3 +16,15 @@ jobs:
           command: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $IMAGE_NAME:latest
+      - run:
+          name: AWS EC2 deploy
+          command: |
+            ssh -o StrictHostKeyChecking=no ubuntu@$HOST "/home/deploy.sh"
+workflows:
+  version: 2
+  build-master:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: master
