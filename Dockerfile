@@ -5,7 +5,7 @@ LABEL maintainer="Tony Developer <tonydev031987@gmail.com>"
 EXPOSE 8001
 
 # Add demo app
-RUN rm /home/*
+RUN rm -r /home/*
 COPY ./prebuild /home
 WORKDIR /home
 CMD ["/home/app/start.sh"]
